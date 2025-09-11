@@ -19,24 +19,24 @@ import { Skeleton } from '@themes/skeleton'
 
 import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
-import { Inset, AspectRatio } from '@radix-ui/themes'
-
-import { useState } from 'preact/hooks'
-
-const SKELETON_COUNT = 2
-
-enum MEDIA_TYPES {
-  VIDEO = 'video',
-  IMAGE = 'img',
-}
 
 const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.PROJECT,
   )
 
-  const [mediaContent, setMediaContent] =
-    useState<VNode>(null)
+  const themeColors = [
+    '#8888ff',
+    '#ff8888',
+    '#44cc88',
+    '#ffaa44',
+    '#cc44cc',
+    '#44bbff',
+    '#ffbb44',
+    '#44ffbb',
+    '#bb44ff',
+    '#ff44bb',
+  ]
 
   const layout = (content: VNode) => (
     <Flex direction="column" gap="3">
@@ -47,10 +47,10 @@ const Project: FunctionComponent = (): VNode => {
   if (loading) {
     return layout(
       <Fragment>
-        {[...Array(SKELETON_COUNT)].map((_, index) => (
+        {[1, 2].map((_, index) => (
           <Skeleton key={index}>
             <GlowPanel>
-              <div style={{ height: 200 }} />
+              <div style={{ height: '200px' }} />
             </GlowPanel>
           </Skeleton>
         ))}
@@ -61,8 +61,7 @@ const Project: FunctionComponent = (): VNode => {
   if (error || !definitions) {
     return layout(
       <GlowPanel>
-        <br />
-        <Heading>页面建设中</Heading>
+        <div>Error loading work experience information</div>
       </GlowPanel>,
     )
   }
@@ -72,40 +71,54 @@ const Project: FunctionComponent = (): VNode => {
   return layout(
     <Fragment>
       {project.project.map((p, index) => {
-        console.log('project media type:', p.media_type)
-
-        switch (p.media_type) {
-          case MEDIA_TYPES.VIDEO:
-            setMediaContent(
-              <iframe src={p.media_uri} allowFullScreen />,
-            )
-            break
-
-          case MEDIA_TYPES.IMAGE:
-            setMediaContent(<img src={p.media_uri} />)
-            break
-
-          default:
-            break
-        }
-
         const children = (
           <Flex direction="row" gap="3">
-            <Flex
-              align="center"
+            {/* 左侧媒体区 */}
+            <div
               style={{
-                width: '20vw',
+                flex: '0 0 320px',
+                maxWidth: '900px',
+                minWidth: '500px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '300px',
               }}
             >
-              <Inset clip="padding-box" side="all">
-                <AspectRatio ratio={4 / 3}>
-                  {mediaContent}
-                </AspectRatio>
-              </Inset>
-            </Flex>
-
-            <Flex direction="column" gap="2" width="100%">
-              <Flex justify="between" width="100%">
+              {p.media_uri &&
+                (p.media_uri.includes('bilibili.com') ? (
+                  <iframe
+                    src={p.media_uri}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      minHeight: '300px',
+                    }}
+                    allow="fullscreen"
+                  />
+                ) : (
+                  <img
+                    src={p.media_uri}
+                    alt="project media"
+                    style={{
+                      width: '100%',
+                      maxWidth: '300px',
+                      borderRadius: '12px',
+                      border: '1px solid #333',
+                      minHeight: '300px',
+                    }}
+                  />
+                ))}
+            </div>
+            {/* 右侧内容区 */}
+            <Flex
+              direction="column"
+              gap="2"
+              style={{ flex: 1 }}
+            >
+              <Flex justify="between">
                 <Heading size="6">{p.name}</Heading>
                 <Text as="p" color="gray" size="2">
                   {p.period}
@@ -116,16 +129,28 @@ const Project: FunctionComponent = (): VNode => {
                   <Typewriter text={d} />
                 </Blockquote>
               ))}
-              {p.comment ? (
+              {p.comment && (
                 <Blockquote>
                   <Typewriter text={p.comment} />
                 </Blockquote>
-              ) : null}
+              )}
             </Flex>
           </Flex>
         )
 
-        return <GlowPanel key={index}>{children}</GlowPanel>
+        return (
+          <GlowPanel
+            key={index}
+            inputStyle={{
+              border: `1px solid ${themeColors[index % themeColors.length]}`,
+              boxShadow: 'none', // 关闭 glow 效果
+              background: 'rgba(20,24,32,0.85)',
+              minHeight: '320px',
+            }}
+          >
+            {children}
+          </GlowPanel>
+        )
       })}
     </Fragment>,
   )
