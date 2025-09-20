@@ -19,24 +19,11 @@ import { Skeleton } from '@themes/skeleton'
 
 import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
-
+import { Inset, AspectRatio } from '@radix-ui/themes'
 const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.PROJECT,
   )
-
-  const themeColors = [
-    '#8888ff',
-    '#ff8888',
-    '#44cc88',
-    '#ffaa44',
-    '#cc44cc',
-    '#44bbff',
-    '#ffbb44',
-    '#44ffbb',
-    '#bb44ff',
-    '#ff44bb',
-  ]
 
   const layout = (content: VNode) => (
     <Flex direction="column" gap="3">
@@ -44,10 +31,13 @@ const Project: FunctionComponent = (): VNode => {
     </Flex>
   )
 
+  const SKELETON_COUNT = 2
+
   if (loading) {
     return layout(
       <Fragment>
-        {[1, 2].map((_, index) => (
+        {/* ai建议我这么写可以随时改数量 */}
+        {[...Array(SKELETON_COUNT)].map((_, index) => (
           <Skeleton key={index}>
             <GlowPanel>
               <div style={{ height: '200px' }} />
@@ -61,7 +51,8 @@ const Project: FunctionComponent = (): VNode => {
   if (error || !definitions) {
     return layout(
       <GlowPanel>
-        <div>Error loading work experience information</div>
+        <br />
+        <Heading>页面建设中</Heading>
       </GlowPanel>,
     )
   }
@@ -71,52 +62,49 @@ const Project: FunctionComponent = (): VNode => {
   return layout(
     <Fragment>
       {project.project.map((p, index) => {
-        const children = (
-          <Flex direction="row" gap="3">
-            {/* 左侧媒体区 */}
-            <div
-              style={{
-                flex: '0 0 320px',
-                maxWidth: '900px',
-                minWidth: '500px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '300px',
-              }}
-            >
-              {p.media_uri &&
-                (p.media_uri.includes('bilibili.com') ? (
+        {
+          /* 左侧媒体区 */
+        }
+        const mediaContent = p.media_uri ? (
+          <div style={{ width: '30%', flexShrink: 0 }}>
+            <Inset clip="padding-box" side="all">
+              {p.media_uri.includes('bilibili.com') ? (
+                <AspectRatio ratio={4 / 3}>
                   <iframe
                     src={p.media_uri}
                     style={{
-                      width: '100%',
-                      height: '200px',
-                      borderRadius: '12px',
                       border: 'none',
-                      minHeight: '300px',
+                      width: '100%',
+                      height: '100%',
                     }}
                     allow="fullscreen"
                   />
-                ) : (
+                </AspectRatio>
+              ) : (
+                <AspectRatio ratio={4 / 3}>
                   <img
                     src={p.media_uri}
                     alt="project media"
                     style={{
+                      objectFit: 'cover',
                       width: '100%',
-                      maxWidth: '300px',
-                      borderRadius: '12px',
-                      border: '1px solid #333',
-                      minHeight: '300px',
+                      height: '100%',
                     }}
-                  />
-                ))}
-            </div>
+                  />{' '}
+                </AspectRatio>
+              )}
+            </Inset>
+          </div>
+        ) : null
+
+        const children = (
+          <Flex direction="row" gap="3">
+            {mediaContent}
             {/* 右侧内容区 */}
             <Flex
               direction="column"
               gap="2"
-              style={{ flex: 1 }}
+              style={{ flexGrow: 2 }}
             >
               <Flex justify="between">
                 <Heading size="6">{p.name}</Heading>
@@ -129,28 +117,16 @@ const Project: FunctionComponent = (): VNode => {
                   <Typewriter text={d} />
                 </Blockquote>
               ))}
-              {p.comment && (
+              {p.comment ? (
                 <Blockquote>
                   <Typewriter text={p.comment} />
                 </Blockquote>
-              )}
+              ) : null}
             </Flex>
           </Flex>
         )
 
-        return (
-          <GlowPanel
-            key={index}
-            inputStyle={{
-              border: `1px solid ${themeColors[index % themeColors.length]}`,
-              boxShadow: 'none', // 关闭 glow 效果
-              background: 'rgba(20,24,32,0.85)',
-              minHeight: '320px',
-            }}
-          >
-            {children}
-          </GlowPanel>
-        )
+        return <GlowPanel key={index}>{children}</GlowPanel>
       })}
     </Fragment>,
   )
