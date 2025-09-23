@@ -20,6 +20,14 @@ import { Skeleton } from '@themes/skeleton'
 import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
 import { Inset, AspectRatio } from '@radix-ui/themes'
+
+import styles from './index.module.css'
+
+enum MEDIA_TYPES {
+  VIDEO = 'video',
+  IMAGE = 'img',
+}
+
 const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.PROJECT,
@@ -36,11 +44,10 @@ const Project: FunctionComponent = (): VNode => {
   if (loading) {
     return layout(
       <Fragment>
-        {/* ai建议我这么写可以随时改数量 */}
         {[...Array(SKELETON_COUNT)].map((_, index) => (
           <Skeleton key={index}>
             <GlowPanel>
-              <div style={{ height: '200px' }} />
+              <div className={styles.skeletonPlaceholder} />
             </GlowPanel>
           </Skeleton>
         ))}
@@ -62,49 +69,45 @@ const Project: FunctionComponent = (): VNode => {
   return layout(
     <Fragment>
       {project.project.map((p, index) => {
-        {
-          /* 左侧媒体区 */
+        /* 左侧媒体区 */
+        let mediaContent = null
+
+        if (p.media_type === MEDIA_TYPES.VIDEO) {
+          mediaContent = (
+            <iframe
+              src={p.media_uri}
+              className={styles.mediaFrame}
+              allowFullScreen
+            />
+          )
+        } else if (p.media_type === MEDIA_TYPES.IMAGE) {
+          mediaContent = (
+            <img
+              src={p.media_uri}
+              alt="project media"
+              className={styles.mediaImage}
+            />
+          )
         }
-        const mediaContent = p.media_uri ? (
-          <div style={{ width: '30%', flexShrink: 0 }}>
+
+        const mediaContent1 = (
+          <div className={styles.mediaBox}>
             <Inset clip="padding-box" side="all">
-              {p.media_uri.includes('bilibili.com') ? (
-                <AspectRatio ratio={4 / 3}>
-                  <iframe
-                    src={p.media_uri}
-                    style={{
-                      border: 'none',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    allow="fullscreen"
-                  />
-                </AspectRatio>
-              ) : (
-                <AspectRatio ratio={4 / 3}>
-                  <img
-                    src={p.media_uri}
-                    alt="project media"
-                    style={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                  />{' '}
-                </AspectRatio>
-              )}
+              <AspectRatio ratio={4 / 3}>
+                {mediaContent}
+              </AspectRatio>
             </Inset>
           </div>
-        ) : null
+        )
 
         const children = (
           <Flex direction="row" gap="3">
-            {mediaContent}
+            {mediaContent1}
             {/* 右侧内容区 */}
             <Flex
               direction="column"
               gap="2"
-              style={{ flexGrow: 2 }}
+              className={styles.content}
             >
               <Flex justify="between">
                 <Heading size="6">{p.name}</Heading>
