@@ -20,6 +20,7 @@ import { Skeleton } from '@themes/skeleton'
 import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
 import { Inset, AspectRatio } from '@radix-ui/themes'
+import styles from './index.module.css'
 const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.PROJECT,
@@ -40,7 +41,7 @@ const Project: FunctionComponent = (): VNode => {
         {[...Array(SKELETON_COUNT)].map((_, index) => (
           <Skeleton key={index}>
             <GlowPanel>
-              <div style={{ height: '200px' }} />
+              <div className={styles.skeletonPlaceholder} />
             </GlowPanel>
           </Skeleton>
         ))}
@@ -62,22 +63,16 @@ const Project: FunctionComponent = (): VNode => {
   return layout(
     <Fragment>
       {project.project.map((p, index) => {
-        {
-          /* 左侧媒体区 */
-        }
+        /* 左侧媒体区 */
         const mediaContent = p.media_uri ? (
-          <div style={{ width: '30%', flexShrink: 0 }}>
+          <div className={styles.mediaBox}>
             <Inset clip="padding-box" side="all">
               {p.media_uri.includes('bilibili.com') ? (
                 <AspectRatio ratio={4 / 3}>
                   <iframe
                     src={p.media_uri}
-                    style={{
-                      border: 'none',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    allow="fullscreen"
+                    className={styles.mediaFrame}
+                    allowFullScreen
                   />
                 </AspectRatio>
               ) : (
@@ -85,12 +80,8 @@ const Project: FunctionComponent = (): VNode => {
                   <img
                     src={p.media_uri}
                     alt="project media"
-                    style={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                  />{' '}
+                    className={styles.mediaImage}
+                  />
                 </AspectRatio>
               )}
             </Inset>
@@ -104,7 +95,7 @@ const Project: FunctionComponent = (): VNode => {
             <Flex
               direction="column"
               gap="2"
-              style={{ flexGrow: 2 }}
+              className={styles.content}
             >
               <Flex justify="between">
                 <Heading size="6">{p.name}</Heading>
