@@ -209,6 +209,7 @@ interface RProject {
   period: string
   description: string[]
   media_uri: string
+  media_type?: string
   comment?: string
   themeColor?: Color
   keywords?: Badge[]
@@ -220,6 +221,7 @@ const RProjectSchema = z
     period: z.string(),
     description: z.array(z.string()),
     media_uri: z.string(),
+    media_type: z.string().optional(),
     comment: z.string().optional(),
     themeColor: ColorSchema.optional(),
     keywords: z.array(BadgeSchema).optional(),

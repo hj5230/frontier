@@ -20,7 +20,14 @@ import { Skeleton } from '@themes/skeleton'
 import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
 import { Inset, AspectRatio } from '@radix-ui/themes'
+
 import styles from './index.module.css'
+
+const MEDIA_TYPES = {
+  VIDEO: 'video',
+  IMAGE: 'img',
+} as const
+
 const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.PROJECT,
@@ -64,33 +71,39 @@ const Project: FunctionComponent = (): VNode => {
     <Fragment>
       {project.project.map((p, index) => {
         /* 左侧媒体区 */
-        const mediaContent = p.media_uri ? (
+        let mediaContent = null
+
+        if (p.media_type === MEDIA_TYPES.VIDEO) {
+          mediaContent = (
+            <iframe
+              src={p.media_uri}
+              className={styles.mediaFrame}
+              allowFullScreen
+            />
+          )
+        } else if (p.media_type === MEDIA_TYPES.IMAGE) {
+          mediaContent = (
+            <img
+              src={p.media_uri}
+              alt="project media"
+              className={styles.mediaImage}
+            />
+          )
+        }
+
+        const mediaContent1 = (
           <div className={styles.mediaBox}>
             <Inset clip="padding-box" side="all">
-              {p.media_uri.includes('bilibili.com') ? (
-                <AspectRatio ratio={4 / 3}>
-                  <iframe
-                    src={p.media_uri}
-                    className={styles.mediaFrame}
-                    allowFullScreen
-                  />
-                </AspectRatio>
-              ) : (
-                <AspectRatio ratio={4 / 3}>
-                  <img
-                    src={p.media_uri}
-                    alt="project media"
-                    className={styles.mediaImage}
-                  />
-                </AspectRatio>
-              )}
+              <AspectRatio ratio={4 / 3}>
+                {mediaContent}
+              </AspectRatio>
             </Inset>
           </div>
-        ) : null
+        )
 
         const children = (
           <Flex direction="row" gap="3">
-            {mediaContent}
+            {mediaContent1}
             {/* 右侧内容区 */}
             <Flex
               direction="column"
