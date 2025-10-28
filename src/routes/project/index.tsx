@@ -23,10 +23,10 @@ import { Inset, AspectRatio } from '@radix-ui/themes'
 
 import styles from './index.module.css'
 
-const MEDIA_TYPES = {
-  VIDEO: 'video',
-  IMAGE: 'img',
-} as const
+enum MEDIA_TYPES {
+  VIDEO = 'video',
+  IMAGE = 'img',
+}
 
 const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
@@ -44,7 +44,6 @@ const Project: FunctionComponent = (): VNode => {
   if (loading) {
     return layout(
       <Fragment>
-        {/* ai建议我这么写可以随时改数量 */}
         {[...Array(SKELETON_COUNT)].map((_, index) => (
           <Skeleton key={index}>
             <GlowPanel>
