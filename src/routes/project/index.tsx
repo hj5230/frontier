@@ -21,7 +21,9 @@ import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
 import { Inset, AspectRatio } from '@radix-ui/themes'
 
-import styles from './index.module.css'
+import { useState } from 'preact/hooks'
+
+const SKELETON_COUNT = 2
 
 enum MEDIA_TYPES {
   VIDEO = 'video',
@@ -33,13 +35,14 @@ const Project: FunctionComponent = (): VNode => {
     DefinitionModule.PROJECT,
   )
 
+  const [mediaContent, setMediaContent] =
+    useState<VNode>(null)
+
   const layout = (content: VNode) => (
     <Flex direction="column" gap="3">
       {content}
     </Flex>
   )
-
-  const SKELETON_COUNT = 2
 
   if (loading) {
     return layout(
@@ -47,7 +50,7 @@ const Project: FunctionComponent = (): VNode => {
         {[...Array(SKELETON_COUNT)].map((_, index) => (
           <Skeleton key={index}>
             <GlowPanel>
-              <div className={styles.skeletonPlaceholder} />
+              <div style={{ height: 200 }} />
             </GlowPanel>
           </Skeleton>
         ))}
@@ -69,47 +72,40 @@ const Project: FunctionComponent = (): VNode => {
   return layout(
     <Fragment>
       {project.project.map((p, index) => {
-        /* 左侧媒体区 */
-        let mediaContent = null
+        console.log('project media type:', p.media_type)
 
-        if (p.media_type === MEDIA_TYPES.VIDEO) {
-          mediaContent = (
-            <iframe
-              src={p.media_uri}
-              className={styles.mediaFrame}
-              allowFullScreen
-            />
-          )
-        } else if (p.media_type === MEDIA_TYPES.IMAGE) {
-          mediaContent = (
-            <img
-              src={p.media_uri}
-              alt="project media"
-              className={styles.mediaImage}
-            />
-          )
+        switch (p.media_type) {
+          case MEDIA_TYPES.VIDEO:
+            setMediaContent(
+              <iframe src={p.media_uri} allowFullScreen />,
+            )
+            break
+
+          case MEDIA_TYPES.IMAGE:
+            setMediaContent(<img src={p.media_uri} />)
+            break
+
+          default:
+            break
         }
-
-        const mediaContent1 = (
-          <div className={styles.mediaBox}>
-            <Inset clip="padding-box" side="all">
-              <AspectRatio ratio={4 / 3}>
-                {mediaContent}
-              </AspectRatio>
-            </Inset>
-          </div>
-        )
 
         const children = (
           <Flex direction="row" gap="3">
-            {mediaContent1}
-            {/* 右侧内容区 */}
             <Flex
-              direction="column"
-              gap="2"
-              className={styles.content}
+              align="center"
+              style={{
+                width: '20vw',
+              }}
             >
-              <Flex justify="between">
+              <Inset clip="padding-box" side="all">
+                <AspectRatio ratio={4 / 3}>
+                  {mediaContent}
+                </AspectRatio>
+              </Inset>
+            </Flex>
+
+            <Flex direction="column" gap="2" width="100%">
+              <Flex justify="between" width="100%">
                 <Heading size="6">{p.name}</Heading>
                 <Text as="p" color="gray" size="2">
                   {p.period}
