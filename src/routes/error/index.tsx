@@ -23,6 +23,7 @@ const $error: FunctionComponent = (): VNode => {
       setCount(prevCount => {
         if (prevCount === 1) {
           clearInterval(timer)
+
           window.location.href =
             definitions.app.path[0].path
         }
