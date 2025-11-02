@@ -61,7 +61,6 @@ const App: FunctionComponent = (): VNode => {
         }
       />
       <Navbar />
-      {/* separator color to be changed */}
       <Separator my="3" size="4" color="cyan" />
       <Panel
         inputStyle={{
@@ -99,7 +98,7 @@ const App: FunctionComponent = (): VNode => {
     )
   }
 
-  // Optimize this in a bit
+  // TODO: Optimize this in a bit
   if (!definitions.app || !definitions.app.path) {
     return layout(
       <div>Error: Invalid app configuration</div>,
