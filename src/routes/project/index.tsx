@@ -21,8 +21,6 @@ import { GlowPanel } from '@components/GlowPanel'
 import { Typewriter } from '@components/TypeWriter'
 import { Inset, AspectRatio } from '@radix-ui/themes'
 
-import { useState } from 'preact/hooks'
-
 const SKELETON_COUNT = 2
 
 enum MEDIA_TYPES {
@@ -34,9 +32,6 @@ const Project: FunctionComponent = (): VNode => {
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.PROJECT,
   )
-
-  const [mediaContent, setMediaContent] =
-    useState<VNode>(null)
 
   const layout = (content: VNode) => (
     <Flex direction="column" gap="3">
@@ -72,19 +67,17 @@ const Project: FunctionComponent = (): VNode => {
   return layout(
     <Fragment>
       {project.project.map((p, index) => {
-        console.log('project media type:', p.media_type)
+        let mediaContent: VNode = null
 
         switch (p.media_type) {
           case MEDIA_TYPES.VIDEO:
-            setMediaContent(
-              <iframe src={p.media_uri} allowFullScreen />,
+            mediaContent = (
+              <iframe src={p.media_uri} allowFullScreen />
             )
             break
-
           case MEDIA_TYPES.IMAGE:
-            setMediaContent(<img src={p.media_uri} />)
+            mediaContent = <img src={p.media_uri} />
             break
-
           default:
             break
         }
