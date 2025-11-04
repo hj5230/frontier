@@ -38,6 +38,7 @@ A flexible and customizable personal website template powered by Radix UI. Craft
 - ~~deprecate local definition files with network request~~
 - switch inline styles into css modules
 - replace all `<br />` next line with actual stylings
+- multiple language support, with i18n
 
 ## Notes
 
