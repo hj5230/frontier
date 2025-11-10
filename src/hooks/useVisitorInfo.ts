@@ -4,6 +4,15 @@ import { useState, useEffect } from 'preact/hooks'
 
 import { VisitorInfo } from '@typings/visitor_info'
 
+/**
+ * Collects and returns comprehensive visitor information including user agent, device details, and browser capabilities.
+ * @returns {VisitorInfo | undefined} Visitor information object containing userAgent, window, and navigator data, or undefined while loading
+ * @example
+ * const visitorInfo = useVisitorInfo()
+ * if (visitorInfo) {
+ *   console.log(visitorInfo.userAgent.device.type) // 'mobile', 'tablet', etc.
+ * }
+ */
 export function useVisitorInfo() {
   const [visitorInfo, setVisitorInfo] = useState<
     VisitorInfo | undefined

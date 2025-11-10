@@ -107,30 +107,51 @@ export const Navbar: FunctionComponent = (): VNode => {
 
   return layout(
     <Fragment>
-      <Flex align="center" gap="4">
-        <Link href="/">
+      <Flex
+        align="center"
+        gap="4"
+        style={{ flex: 1, minWidth: 0 }}
+      >
+        <Link href="/" style={{ flexShrink: 0 }}>
           <Avatar
             src={navbar.site_icon_uri}
             fallback="Frontier"
             size="4"
           />
         </Link>
-        <Separator orientation="vertical" size="2" />
-        {app.path.map(n => (
-          <Link
-            key={n.path}
-            href={n.path}
-            weight="bold"
-            size="4"
-            style={{ margin: '10px' }}
-            underline={
-              currentPath === n.path ? 'always' : 'hover'
-            }
-            highContrast={currentPath !== n.path}
-          >
-            {n.name}
-          </Link>
-        ))}
+        <Separator
+          orientation="vertical"
+          size="2"
+          style={{ flexShrink: 0 }}
+        />
+        <Flex
+          align="center"
+          gap="4"
+          style={{
+            overflowX: 'auto',
+            scrollbarWidth: 'thin',
+            WebkitOverflowScrolling: 'touch',
+            whiteSpace: 'nowrap',
+            flex: 1,
+            minWidth: 0,
+          }}
+        >
+          {app.path.map(n => (
+            <Link
+              key={n.path}
+              href={n.path}
+              weight="bold"
+              size="4"
+              style={{ margin: '10px', flexShrink: 0 }}
+              underline={
+                currentPath === n.path ? 'always' : 'hover'
+              }
+              highContrast={currentPath !== n.path}
+            >
+              {n.name}
+            </Link>
+          ))}
+        </Flex>
       </Flex>
       <Flex align="center" gap="4">
         <Root

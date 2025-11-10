@@ -70,6 +70,14 @@ async function fetchDefinitionModule<
   return schema.parse(data)
 }
 
+/**
+ * Fetches and caches definition data for specified modules.
+ * @template T - Array of definition module names
+ * @param {...T} moduleNames - One or more definition module names to load
+ * @returns {[Partial<Definitions>, boolean, Error | null]} Tuple containing definitions object, loading state, and error
+ * @example
+ * const [definitions, loading, error] = useDefinitions(DefinitionModule.PROJECT, DefinitionModule.NAVBAR)
+ */
 export function useDefinitions<
   T extends DefinitionModule[],
 >(...moduleNames: T) {

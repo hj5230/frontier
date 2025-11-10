@@ -26,6 +26,8 @@ import Contact from '@routes/contact'
 import Work from '@routes/work'
 import $error from '@routes/error'
 
+import { useDeviceType } from '@hooks/useDeviceType'
+
 const App: FunctionComponent = (): VNode => {
   const [appearance, setAppearance] = useState(
     Appearance.DARK,
@@ -40,7 +42,7 @@ const App: FunctionComponent = (): VNode => {
         : Appearance.DARK,
     )
   }
-
+  const isMobile = useDeviceType()
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.APP,
   )
@@ -52,14 +54,16 @@ const App: FunctionComponent = (): VNode => {
       grayColor="sage"
       style={{ minHeight: 0 }}
     >
-      <Draggable
-        items={
-          <OperationIndex
-            appearance={appearance}
-            changeAppearance={changeAppearance}
-          />
-        }
-      />
+      {!isMobile && (
+        <Draggable
+          items={
+            <OperationIndex
+              appearance={appearance}
+              changeAppearance={changeAppearance}
+            />
+          }
+        />
+      )}
       <Navbar />
       <Separator my="3" size="4" color="cyan" />
       <Panel
