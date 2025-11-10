@@ -13,6 +13,16 @@ interface NotificationState {
   type: NotificationType
 }
 
+/**
+ * Manages notification state with show/hide functionality.
+ * @returns {Object} Notification state and control functions
+ * @returns {NotificationState} notification - Current notification state
+ * @returns {Function} showNotification - Function to display a notification (title, message, type)
+ * @returns {Function} hideNotification - Function to hide the current notification
+ * @example
+ * const { showNotification, hideNotification } = useNotification()
+ * showNotification('Success', 'Data saved!', 'success')
+ */
 export const useNotification = () => {
   const [notification, setNotification] =
     useState<NotificationState>({

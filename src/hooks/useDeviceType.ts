@@ -1,6 +1,10 @@
 import { useVisitorInfo } from '@hooks/useVisitorInfo'
 
-export function useMobile() {
+/**
+ * Detects if the current device is mobile.
+ * @returns {boolean | null} true for mobile devices, false for desktop/tablet, null while visitor info is loading
+ */
+export function useDeviceType() {
   const visitorInfo = useVisitorInfo()
 
   if (!visitorInfo) {
@@ -11,9 +15,6 @@ export function useMobile() {
 
   switch (deviceType) {
     case 'mobile':
-      return true
-
-    case 'tablet':
       return true
 
     default:

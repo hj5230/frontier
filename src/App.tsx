@@ -26,7 +26,7 @@ import Contact from '@routes/contact'
 import Work from '@routes/work'
 import $error from '@routes/error'
 
-import { useMobile } from '@hooks/useMobile'
+import { useDeviceType } from '@hooks/useDeviceType'
 
 const App: FunctionComponent = (): VNode => {
   const [appearance, setAppearance] = useState(
@@ -42,7 +42,7 @@ const App: FunctionComponent = (): VNode => {
         : Appearance.DARK,
     )
   }
-  const isMobile = useMobile()
+  const isMobile = useDeviceType()
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.APP,
   )

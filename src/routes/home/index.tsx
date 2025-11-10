@@ -4,7 +4,7 @@ import { Grid } from '@themes/grid'
 import { Flex } from '@themes/flex'
 import { GlowPanel } from '@components/GlowPanel'
 import { Heading } from '@themes/heading'
-import { useMobile } from '@hooks/useMobile'
+import { useDeviceType } from '@hooks/useDeviceType'
 
 import {
   Header,
@@ -15,8 +15,8 @@ import {
 } from '@components/HomeSegment'
 
 const Home: FunctionComponent = (): VNode => {
-  const isMobile = useMobile()
-  if (isMobile == null) {
+  const deviceType = useDeviceType()
+  if (deviceType == null) {
     return (
       <GlowPanel>
         <br />
@@ -25,7 +25,7 @@ const Home: FunctionComponent = (): VNode => {
     )
   }
 
-  switch (isMobile) {
+  switch (deviceType) {
     case true:
       return (
         <Flex direction="column" gap="4">

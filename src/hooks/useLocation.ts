@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'preact/hooks'
 
+/**
+ * Tracks and returns the current browser location pathname.
+ * @returns {string} The current pathname (e.g., '/project', '/resume')
+ * @example
+ * const currentPath = useLocation() // Returns '/home'
+ */
 export function useLocation() {
   if (typeof window === 'undefined') return '/'
   const [path, setPath] = useState(window.location.pathname)
