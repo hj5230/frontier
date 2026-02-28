@@ -96,4 +96,7 @@ export default defineConfig({
     profile: true,
     removeConsole: ['log', 'info', 'table', 'group'],
   },
+  server: {
+    port: 10331,
+  },
 })

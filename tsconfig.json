@@ -17,7 +17,8 @@
       "@components/*": ["src/components/*"],
       "@hooks/*": ["src/hooks/*"],
       "@routes/*": ["src/routes/*"],
-      "@typings/*": ["src/typings/*"]
+      "@typings/*": ["src/typings/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*"],
