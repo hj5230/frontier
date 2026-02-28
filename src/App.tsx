@@ -2,8 +2,8 @@ import { h, FunctionComponent, VNode } from 'preact'
 
 import { Route, Router } from 'preact-router'
 
-import { useState } from 'preact/hooks'
-import { useDefinitions } from '@hooks/.'
+import { useEffect, useState } from 'preact/hooks'
+import { useDefinitions, useExternalConfig } from '@hooks/.'
 
 import { Appearance } from '@typings/appearance'
 import { DefinitionModule } from '@typings/definition'
@@ -25,10 +25,24 @@ import Project from '@routes/project'
 import Contact from '@routes/contact'
 import Work from '@routes/work'
 import $error from '@routes/error'
+import { GlobalContext } from './context'
 
 const App: FunctionComponent = (): VNode => {
+  const searchParams = Object.fromEntries(
+    new URLSearchParams(window.location.search),
+  )
+  const isEmbedded = searchParams.embedded === '1'
+
+  const config = useExternalConfig()
+
+  useEffect(() => {
+    if (config?.appearance) {
+      setAppearance(config.appearance)
+    }
+  }, [config])
+
   const [appearance, setAppearance] = useState(
-    Appearance.DARK,
+    isEmbedded ? Appearance.LIGHT : Appearance.DARK,
   )
   // resolve color matching issue in a bit
   // const [themeColor, setThemeColor] = useState('iris')
@@ -46,30 +60,34 @@ const App: FunctionComponent = (): VNode => {
   )
 
   const layout = (content: VNode) => (
-    <Theme
-      appearance={appearance}
-      accentColor="teal"
-      grayColor="sage"
-      style={{ minHeight: 0 }}
-    >
-      <Draggable
-        items={
-          <OperationIndex
-            appearance={appearance}
-            changeAppearance={changeAppearance}
-          />
-        }
-      />
-      <Navbar />
-      <Separator my="3" size="4" color="cyan" />
-      <Panel
-        inputStyle={{
-          height: 'calc(100vh - 100px)',
-        }}
+    <GlobalContext.Provider value={{ isEmbedded }}>
+      <Theme
+        appearance={appearance}
+        accentColor="teal"
+        grayColor="sage"
+        style={{ minHeight: 0 }}
       >
-        {content}
-      </Panel>
-    </Theme>
+        {!isEmbedded && (
+          <Draggable
+            items={
+              <OperationIndex
+                appearance={appearance}
+                changeAppearance={changeAppearance}
+              />
+            }
+          />
+        )}
+        <Navbar />
+        <Separator my="3" size="4" color="cyan" />
+        <Panel
+          inputStyle={{
+            height: 'calc(100vh - 100px)',
+          }}
+        >
+          {content}
+        </Panel>
+      </Theme>
+    </GlobalContext.Provider>
   )
 
   if (loading) {

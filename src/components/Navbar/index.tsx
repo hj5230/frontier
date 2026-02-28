@@ -20,12 +20,15 @@ import { Root, Slot } from '@themes/text-field'
 import { Skeleton } from '@themes/skeleton'
 
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import { useGlobalContext } from '@/context'
 
 /**
  * TODO: explicit `event` type instead of `any`
  * @returns {VNode} Navbar component
  */
 export const Navbar: FunctionComponent = (): VNode => {
+  const { isEmbedded } = useGlobalContext()
+
   const [definitions, loading, error] = useDefinitions(
     DefinitionModule.APP,
     DefinitionModule.NAVBAR,
@@ -132,22 +135,25 @@ export const Navbar: FunctionComponent = (): VNode => {
           </Link>
         ))}
       </Flex>
-      <Flex align="center" gap="4">
-        <Root
-          ref={searchInputRef}
-          placeholder="⌘ + F"
-          radius="full"
-          size="3"
-          value={searchValue}
-          onChange={handleSearchValueChange}
-          onKeyPress={handleKeyPress}
-          onFocus={handleSearchFocus}
-        >
-          <Slot>
-            <MagnifyingGlassIcon height="24" width="24" />
-          </Slot>
-        </Root>
-        {/* <DropdownMenu.Root
+
+      {!isEmbedded && (
+        <Flex align="center" gap="4">
+          <Root
+            ref={searchInputRef}
+            placeholder="⌘ + F"
+            radius="full"
+            size="3"
+            value={searchValue}
+            onChange={handleSearchValueChange}
+            onKeyPress={handleKeyPress}
+            onFocus={handleSearchFocus}
+          >
+            <Slot>
+              <MagnifyingGlassIcon height="24" width="24" />
+            </Slot>
+          </Root>
+
+          {/* <DropdownMenu.Root
             open={isOpen}
             onOpenChange={setIsOpen}
           >
@@ -167,7 +173,8 @@ export const Navbar: FunctionComponent = (): VNode => {
               </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu.Root> */}
-      </Flex>
+        </Flex>
+      )}
     </Fragment>,
   )
 }
