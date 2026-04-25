@@ -27,6 +27,8 @@ import Work from '@routes/work'
 import $error from '@routes/error'
 import { GlobalContext } from './context'
 
+import { Analytics } from '@vercel/analytics/react'
+
 const App: FunctionComponent = (): VNode => {
   const searchParams = Object.fromEntries(
     new URLSearchParams(window.location.search),
@@ -86,6 +88,7 @@ const App: FunctionComponent = (): VNode => {
         >
           {content}
         </Panel>
+        <Analytics />
       </Theme>
     </GlobalContext.Provider>
   )
