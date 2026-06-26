@@ -72,11 +72,17 @@ const Project: FunctionComponent = (): VNode => {
         switch (p.media_type) {
           case MEDIA_TYPES.VIDEO:
             mediaContent = (
-              <iframe src={p.media_uri} allowFullScreen />
+              <iframe
+                src={p.media_uri}
+                title={p.name}
+                allowFullScreen
+              />
             )
             break
           case MEDIA_TYPES.IMAGE:
-            mediaContent = <img src={p.media_uri} />
+            mediaContent = (
+              <img src={p.media_uri} alt={p.name} />
+            )
             break
           default:
             break

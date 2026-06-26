@@ -1,0 +1,27 @@
+.wrapper {
+  position: absolute;
+  cursor: grab;
+  background-color: var(--gray-3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-out;
+  user-select: none;
+  z-index: 1;
+}
+
+.handle {
+  cursor: grab;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--gray-9);
+  margin-right: 4px;
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--gray-9);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

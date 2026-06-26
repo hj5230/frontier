@@ -6,6 +6,11 @@ yarn.lock
 build/
 reports/
 
+# Test artifacts
+test-results/
+playwright-report/
+.playwright/
+
 # Deployments
 output/
 

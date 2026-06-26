@@ -1,0 +1,39 @@
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-width: 300px;
+  width: 100%;
+}
+
+.info {
+  background-color: #2196f3;
+}
+
+.success {
+  background-color: #4caf50;
+}
+
+.warning {
+  background-color: #ff9800;
+}
+
+.error {
+  background-color: #f44336;
+}
+
+.title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.message {
+  margin: 0;
+  font-size: 14px;
+}

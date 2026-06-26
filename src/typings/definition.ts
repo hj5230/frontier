@@ -1,27 +1,19 @@
 import { z } from 'zod'
 
-import { Color, ColorSchema } from '@typings/color'
-import {
-  LangLevel,
-  LangLevelSchema,
-} from '@typings/lang_level'
+import { ColorSchema } from '@typings/color'
+import { LangLevelSchema } from '@typings/lang_level'
 import { Appearance } from '@typings/appearance'
 
-interface Badge {
-  text: string
-  color: Color
-}
+/**
+ * All definition types are derived from their Zod schema via `z.infer`,
+ * so the static types and the runtime validators are guaranteed to stay
+ * in sync (no more hand-maintained interface/schema drift).
+ */
 
 const BadgeSchema = z.object({
   text: z.string(),
   color: ColorSchema,
 })
-
-interface Experience {
-  title: string
-  period: string
-  description: string[]
-}
 
 const ExperienceSchema = z.object({
   title: z.string(),
@@ -29,47 +21,12 @@ const ExperienceSchema = z.object({
   description: z.array(z.string()),
 })
 
-interface Project {
-  title: string
-  description: string[]
-  link: string
-  image_uri?: string
-}
-
 const ProjectSchema = z.object({
   title: z.string(),
   description: z.array(z.string()),
   link: z.string(),
   image_uri: z.string().optional(),
 })
-
-export interface Definition {
-  avatar_uri: string
-  name: string
-  intro: string
-  _about_me: string
-  about_me: string
-  _experience: string
-  badges: Badge[]
-  experience: Experience[]
-  _project: string
-  project: Project[]
-  _contact: string
-  _phone: string
-  phone: string[]
-  _email: string
-  email: string
-  _wechat: string
-  wechat: string
-  _github: string
-  github: string
-  _langlevel: {
-    basic: string
-    intermediate: string
-    advanced: string
-    native: string
-  }
-}
 
 export const DefinitionSchema = z
   .object({
@@ -101,14 +58,6 @@ export const DefinitionSchema = z
   })
   .strict()
 
-interface Education {
-  institution: string
-  period: string
-  degree: string
-  comment?: string
-  themeColor?: Color
-}
-
 const EducationSchema = z
   .object({
     institution: z.string(),
@@ -118,16 +67,6 @@ const EducationSchema = z
     themeColor: ColorSchema.optional(),
   })
   .strict()
-
-interface Work {
-  company: string
-  department: string
-  role: string
-  period: string
-  description: string[]
-  comment?: string
-  themeColor?: Color
-}
 
 const WorkSchema = z
   .object({
@@ -142,13 +81,6 @@ const WorkSchema = z
   })
   .strict()
 
-interface TechStack {
-  title: string
-  description: string
-  comment?: string
-  themeColor?: Color
-}
-
 const TechStackSchema = z
   .object({
     title: z.string(),
@@ -158,13 +90,6 @@ const TechStackSchema = z
   })
   .strict()
 
-interface Language {
-  lang: string
-  level: LangLevel
-  comment?: string
-  themeColor?: Color
-}
-
 const LanguageSchema = z
   .object({
     lang: z.string(),
@@ -173,20 +98,6 @@ const LanguageSchema = z
     themeColor: ColorSchema.optional(),
   })
   .strict()
-
-export interface ResumeDefinition {
-  _education: string
-  education: Education[]
-  education_keywords?: Badge[]
-  _work: string
-  work: Work[]
-  work_keywords?: Badge[]
-  _tech_stack: string
-  tech_stack: TechStack[]
-  _language: string
-  language: Language[]
-  language_keywords?: Badge[]
-}
 
 export const ResumeDefinitionSchema = z
   .object({
@@ -204,17 +115,6 @@ export const ResumeDefinitionSchema = z
   })
   .strict()
 
-interface RProject {
-  name: string
-  period: string
-  description: string[]
-  media_uri: string
-  media_type?: string
-  comment?: string
-  themeColor?: Color
-  keywords?: Badge[]
-}
-
 const RProjectSchema = z
   .object({
     name: z.string(),
@@ -228,51 +128,17 @@ const RProjectSchema = z
   })
   .strict()
 
-export interface ProjectDefinition {
-  project: RProject[]
-}
-
 export const ProjectDefinitionSchema = z
   .object({
     project: z.array(RProjectSchema),
   })
   .strict()
 
-interface RWork {
-  company: string
-  department: string
-  role: string
-  period: string
-  description: string[]
-  comment?: string
-  themeColor?: Color
-  keywords?: Badge[]
-}
-
-export interface WorkDefinition {
-  work: RWork[]
-}
-
 export const WorkDefinitionSchema = z
   .object({
     work: z.array(WorkSchema),
   })
   .strict()
-
-export interface ContactDefinition {
-  _contact: string
-  _phone: string
-  phone: string[]
-  _email: string
-  email: string
-  _wechat: string
-  wechat: string
-  _github: string
-  github: string
-  _linkedin: string
-  linkedin: string
-  comment?: string
-}
 
 export const ContactDefinitionSchema = z
   .object({
@@ -291,22 +157,12 @@ export const ContactDefinitionSchema = z
   })
   .strict()
 
-interface NavigatorItem {
-  name: string
-  path: string
-}
-
 const NavigatorItemSchema = z
   .object({
     name: z.string(),
     path: z.string(),
   })
   .strict()
-
-export interface NavbarDefinition {
-  site_icon_uri: string
-  navigator_items: NavigatorItem[]
-}
 
 export const NavbarDefinitionSchema = z
   .object({
@@ -315,11 +171,6 @@ export const NavbarDefinitionSchema = z
   })
   .strict()
 
-interface Path {
-  name: string
-  path: string
-}
-
 const PathSchema = z
   .object({
     name: z.string(),
@@ -327,25 +178,37 @@ const PathSchema = z
   })
   .strict()
 
-export interface AppDefinition {
-  path: Path[]
-  defaultThemeColor: Color
-  defaultAppearance: Appearance
-  $error_title: string
-  $error_description: string
-  $error_redirect: string
-}
-
 export const AppDefinitionSchema = z
   .object({
     path: z.array(PathSchema),
     defaultThemeColor: ColorSchema,
-    defaultAppearance: z.string(),
+    defaultAppearance: z.nativeEnum(Appearance),
     $error_title: z.string(),
     $error_description: z.string(),
     $error_redirect: z.string(),
   })
   .strict()
+
+export type Badge = z.infer<typeof BadgeSchema>
+export type Definition = z.infer<typeof DefinitionSchema>
+export type ResumeDefinition = z.infer<
+  typeof ResumeDefinitionSchema
+>
+export type ProjectDefinition = z.infer<
+  typeof ProjectDefinitionSchema
+>
+export type WorkDefinition = z.infer<
+  typeof WorkDefinitionSchema
+>
+export type ContactDefinition = z.infer<
+  typeof ContactDefinitionSchema
+>
+export type NavbarDefinition = z.infer<
+  typeof NavbarDefinitionSchema
+>
+export type AppDefinition = z.infer<
+  typeof AppDefinitionSchema
+>
 
 export enum DefinitionModule {
   APP = 'app',

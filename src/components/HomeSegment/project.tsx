@@ -84,7 +84,11 @@ export const Project: FunctionComponent = (): VNode => {
                 </Text>
               </Link>
               {p.image_uri && (
-                <Media uri={p.image_uri} type="image" />
+                <Media
+                  uri={p.image_uri}
+                  type="image"
+                  alt={p.title}
+                />
               )}
               {p.description.map((d, i) => (
                 <Blockquote key={i}>

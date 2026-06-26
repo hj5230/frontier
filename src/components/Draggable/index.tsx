@@ -5,12 +5,16 @@ import { Position } from '@typings/position'
 
 import { Box } from '@themes/box'
 import { Flex } from '@themes/flex'
-// import DragHandleDots2Icon from '@radix-ui/react-icons/dist/DragHandleDots2Icon'
+
+import styles from './draggable.module.css'
 
 interface DraggableProps {
   items: VNode
   initialPosition?: Position
 }
+
+// Pixels moved per arrow-key press when the handle has keyboard focus.
+const KEYBOARD_STEP = 10
 
 export const Draggable: FunctionComponent<
   DraggableProps
@@ -22,6 +26,34 @@ export const Draggable: FunctionComponent<
   const dragHandleRef = useRef<HTMLDivElement>(null)
   const offsetXRef = useRef(0)
   const offsetYRef = useRef(0)
+
+  function clamp(
+    value: number,
+    min: number,
+    max: number,
+  ): number {
+    return Math.max(min, Math.min(value, max))
+  }
+
+  function moveTo(left: number, top: number): void {
+    const wrapper = wrapperRef.current
+    const parent = wrapper?.parentElement
+    if (!wrapper || !parent) return
+
+    const parentRect = parent.getBoundingClientRect()
+    const wrapperRect = wrapper.getBoundingClientRect()
+
+    wrapper.style.left = `${clamp(
+      left,
+      0,
+      parentRect.width - wrapperRect.width,
+    )}px`
+    wrapper.style.top = `${clamp(
+      top,
+      0,
+      parentRect.height - wrapperRect.height,
+    )}px`
+  }
 
   function onMouseDown(e: MouseEvent): void {
     const wrapper = wrapperRef.current
@@ -39,32 +71,13 @@ export const Draggable: FunctionComponent<
   }
 
   function onMouseMove(e: MouseEvent): void {
-    const wrapper = wrapperRef.current
-    if (wrapper) {
-      const parent = wrapper.parentElement
-      if (parent) {
-        const parentRect = parent.getBoundingClientRect()
-        const wrapperRect = wrapper.getBoundingClientRect()
-
-        let newLeft = e.clientX - offsetXRef.current
-        let newTop = e.clientY - offsetYRef.current
-
-        const minLeft = 0
-        const maxLeft = parentRect.width - wrapperRect.width
-        const minTop = 0
-        const maxTop =
-          parentRect.height - wrapperRect.height
-
-        newLeft = Math.max(
-          minLeft,
-          Math.min(newLeft, maxLeft),
-        )
-        newTop = Math.max(minTop, Math.min(newTop, maxTop))
-
-        wrapper.style.left = `${newLeft}px`
-        wrapper.style.top = `${newTop}px`
-      }
-    }
+    const parent = wrapperRef.current?.parentElement
+    if (!parent) return
+    const parentRect = parent.getBoundingClientRect()
+    moveTo(
+      e.clientX - offsetXRef.current - parentRect.left,
+      e.clientY - offsetYRef.current - parentRect.top,
+    )
   }
 
   function onMouseUp(): void {
@@ -77,13 +90,36 @@ export const Draggable: FunctionComponent<
     }
   }
 
-  useEffect(() => {
+  function onHandleKeyDown(e: KeyboardEvent): void {
     const wrapper = wrapperRef.current
-    if (wrapper) {
-      wrapper.style.left = `${initialPosition.x}px`
-      wrapper.style.top = `${initialPosition.y}px`
-    }
+    const parent = wrapper?.parentElement
+    if (!wrapper || !parent) return
 
+    const parentRect = parent.getBoundingClientRect()
+    const rect = wrapper.getBoundingClientRect()
+    const left = rect.left - parentRect.left
+    const top = rect.top - parentRect.top
+
+    switch (e.key) {
+      case 'ArrowUp':
+        moveTo(left, top - KEYBOARD_STEP)
+        break
+      case 'ArrowDown':
+        moveTo(left, top + KEYBOARD_STEP)
+        break
+      case 'ArrowLeft':
+        moveTo(left - KEYBOARD_STEP, top)
+        break
+      case 'ArrowRight':
+        moveTo(left + KEYBOARD_STEP, top)
+        break
+      default:
+        return
+    }
+    e.preventDefault()
+  }
+
+  useEffect(() => {
     const dragHandle = dragHandleRef.current
     if (dragHandle) {
       dragHandle.addEventListener('mousedown', onMouseDown)
@@ -102,17 +138,8 @@ export const Draggable: FunctionComponent<
   return (
     <Box
       ref={wrapperRef}
+      className={styles.wrapper}
       style={{
-        position: 'absolute',
-        cursor: 'grab',
-        backgroundColor: 'var(--gray-3)',
-        borderRadius: '8px',
-        padding: '8px 12px',
-        boxShadow:
-          '0 6px 24px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1)',
-        transition: 'all 0.2s ease-out',
-        userSelect: 'none',
-        zIndex: 1,
         left: initialPosition.x,
         top: initialPosition.y,
       }}
@@ -120,16 +147,13 @@ export const Draggable: FunctionComponent<
       <Flex align="center" gap="2">
         <div
           ref={dragHandleRef}
-          style={{
-            cursor: 'grab',
-            fontSize: '24px',
-            lineHeight: 1,
-            color: 'var(--gray-9)',
-            marginRight: '4px',
-          }}
+          className={styles.handle}
+          role="button"
+          tabIndex={0}
+          aria-label="Drag handle — use arrow keys to move"
+          onKeyDown={onHandleKeyDown}
         >
           ⋮⋮
-          {/* <DragHandleDots2Icon width="24" height="24" /> */}
         </div>
         {items}
       </Flex>

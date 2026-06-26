@@ -68,6 +68,9 @@ export default defineConfig({
       'process.env.GITHUB_FILE_PATH': JSON.stringify(
         process.env.GITHUB_FILE_PATH,
       ),
+      'process.env.TRUSTED_PARENT_ORIGINS': JSON.stringify(
+        process.env.TRUSTED_PARENT_ORIGINS,
+      ),
     },
   },
   output: {

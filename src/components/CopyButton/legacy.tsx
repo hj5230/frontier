@@ -5,6 +5,8 @@ import { Button } from '@themes/button'
 import { Text } from '@themes/text'
 import { CopyIcon } from '@radix-ui/react-icons'
 
+import { writeToClipboard } from '@/utils/clipboard'
+
 interface CopyButtonProps {
   textToCopy: string
 }
@@ -14,59 +16,9 @@ export const LegacyCopyButton: FunctionComponent<
 > = ({ textToCopy }): VNode => {
   const [isCopied, setIsCopied] = useState(false)
 
-  const handleCopy = () => {
-    if (
-      navigator.clipboard &&
-      navigator.clipboard.writeText
-    ) {
-      navigator.clipboard
-        .writeText(textToCopy)
-        .then(() => {
-          setIsCopied(true)
-        })
-        .catch(err => {
-          console.error(
-            `[COPY-LEGACY] Caught error when trying to write text: ${err}`,
-          )
-          console.warn(
-            '[COPY-LEGACY] Fallback to legacy copy method',
-          )
-          fallbackCopyTextToClipboard(textToCopy)
-        })
-    } else {
-      console.warn(
-        '[COPY-LEGACY] Fallback to legacy copy method',
-      )
-      fallbackCopyTextToClipboard(textToCopy)
-    }
-  }
-
-  const fallbackCopyTextToClipboard = (text: string) => {
-    const textArea = document.createElement('textarea')
-    textArea.value = text
-
-    textArea.style.top = '0'
-    textArea.style.left = '0'
-    textArea.style.position = 'fixed'
-
-    document.body.appendChild(textArea)
-    textArea.focus()
-    textArea.select()
-
-    try {
-      const success = document.execCommand('copy')
-      if (!success)
-        console.error(
-          '[COPY-LEGACY-FALLBACK] Failed to execute copy',
-        )
-      setIsCopied(true)
-    } catch (err) {
-      console.error(
-        `[COPY-LEGACY-FALLBACK] Caught error when trying to execute copy: , ${err}`,
-      )
-    }
-
-    document.body.removeChild(textArea)
+  const handleCopy = async () => {
+    const copied = await writeToClipboard(textToCopy)
+    if (copied) setIsCopied(true)
   }
 
   useEffect(() => {

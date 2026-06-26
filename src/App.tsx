@@ -33,6 +33,12 @@ const App: FunctionComponent = (): VNode => {
   )
   const isEmbedded = searchParams.embedded === '1'
 
+  const [appearance, setAppearance] = useState(
+    isEmbedded ? Appearance.LIGHT : Appearance.DARK,
+  )
+  // resolve color matching issue in a bit
+  // const [themeColor, setThemeColor] = useState('iris')
+
   const config = useExternalConfig()
 
   useEffect(() => {
@@ -41,15 +47,9 @@ const App: FunctionComponent = (): VNode => {
     }
   }, [config])
 
-  const [appearance, setAppearance] = useState(
-    isEmbedded ? Appearance.LIGHT : Appearance.DARK,
-  )
-  // resolve color matching issue in a bit
-  // const [themeColor, setThemeColor] = useState('iris')
-
   function changeAppearance() {
-    setAppearance(
-      appearance === Appearance.DARK
+    setAppearance(prev =>
+      prev === Appearance.DARK
         ? Appearance.LIGHT
         : Appearance.DARK,
     )
@@ -116,35 +116,34 @@ const App: FunctionComponent = (): VNode => {
     )
   }
 
-  // TODO: Optimize this in a bit
   if (!definitions.app || !definitions.app.path) {
     return layout(
       <div>Error: Invalid app configuration</div>,
     )
   }
 
+  // Map each route definition to its component by name, so registration is
+  // independent of the order/length of `app.path` in the remote config.
+  const routeComponents: Record<string, FunctionComponent> =
+    {
+      Home,
+      Resume,
+      Project,
+      Work,
+      Contact,
+    }
+
   return layout(
     <Router>
-      <Route
-        path={definitions.app.path[0].path}
-        component={Home}
-      />
-      <Route
-        path={definitions.app.path[1].path}
-        component={Resume}
-      />
-      <Route
-        path={definitions.app.path[2].path}
-        component={Project}
-      />
-      <Route
-        path={definitions.app.path[3].path}
-        component={Work}
-      />
-      <Route
-        path={definitions.app.path[4].path}
-        component={Contact}
-      />
+      {definitions.app.path
+        .filter(entry => routeComponents[entry.name])
+        .map(entry => (
+          <Route
+            key={entry.path}
+            path={entry.path}
+            component={routeComponents[entry.name]}
+          />
+        ))}
       <Route default component={$error} />
     </Router>,
   )

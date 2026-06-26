@@ -1,33 +1,5 @@
 import { z } from 'zod'
 
-export type Color =
-  | 'gray'
-  | 'gold'
-  | 'bronze'
-  | 'brown'
-  | 'yellow'
-  | 'amber'
-  | 'orange'
-  | 'tomato'
-  | 'red'
-  | 'ruby'
-  | 'crimson'
-  | 'pink'
-  | 'plum'
-  | 'purple'
-  | 'violet'
-  | 'iris'
-  | 'indigo'
-  | 'blue'
-  | 'cyan'
-  | 'teal'
-  | 'jade'
-  | 'green'
-  | 'grass'
-  | 'lime'
-  | 'mint'
-  | 'sky'
-
 export const ColorSchema = z.union([
   z.literal('gray'),
   z.literal('gold'),
@@ -56,3 +28,9 @@ export const ColorSchema = z.union([
   z.literal('mint'),
   z.literal('sky'),
 ])
+
+/**
+ * Derived from {@link ColorSchema} so the type and the runtime validator
+ * can never drift apart.
+ */
+export type Color = z.infer<typeof ColorSchema>

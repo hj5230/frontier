@@ -1,6 +1,8 @@
 import { h, FunctionComponent, VNode } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
+import styles from './typewriter.module.css'
+
 interface TypeWriterProps {
   text: string
   speed?: number
@@ -30,10 +32,12 @@ export const Typewriter: FunctionComponent<
     }
   }, [index, text, speed])
 
-  const textStyle = {
-    ...inputStyle,
-    ...(soft ? { color: '#dcdcdc' } : {}),
-  }
-
-  return <div style={textStyle}>{displayedText}</div>
+  return (
+    <div
+      className={soft ? styles.soft : undefined}
+      style={inputStyle}
+    >
+      {displayedText}
+    </div>
+  )
 }

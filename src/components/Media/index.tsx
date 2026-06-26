@@ -5,6 +5,8 @@ import {
   Fragment,
 } from 'preact'
 
+import styles from './media.module.css'
+
 interface MediaSize {
   width: string | number
   height: string | number
@@ -13,6 +15,8 @@ interface MediaSize {
 interface MediaProps {
   uri: string
   type: 'image' | 'video'
+  /** Accessible description for images; falls back to an empty string. */
+  alt?: string
   size?: MediaSize
   inputStyle?: preact.JSX.CSSProperties
 }
@@ -20,25 +24,36 @@ interface MediaProps {
 export const Media: FunctionComponent<MediaProps> = ({
   uri,
   type,
+  alt = '',
   size,
   inputStyle,
 }): VNode => {
-  let mediaStyle: preact.JSX.CSSProperties
-
-  size
-    ? (mediaStyle = {
+  const mediaStyle: preact.JSX.CSSProperties = size
+    ? {
         width: size.width,
         height: size.height,
         ...inputStyle,
-      })
-    : (mediaStyle = { ...inputStyle })
+      }
+    : { ...inputStyle }
 
-  const children = (
-    <Fragment>
-      {type === 'image' && <img src={uri} />}
-      {type === 'video' && <video src={uri} controls />}
-    </Fragment>
+  return (
+    <div style={mediaStyle}>
+      <Fragment>
+        {type === 'image' && (
+          <img
+            className={styles.media}
+            src={uri}
+            alt={alt}
+          />
+        )}
+        {type === 'video' && (
+          <video
+            className={styles.media}
+            src={uri}
+            controls
+          />
+        )}
+      </Fragment>
+    </div>
   )
-
-  return <div style={mediaStyle}>{children}</div>
 }
